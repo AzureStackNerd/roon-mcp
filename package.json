@@ -1,6 +1,6 @@
 {
   "name": "roon-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for controlling Roon music playback via Claude Desktop",
   "type": "module",
   "main": "build/index.js",
@@ -8,6 +8,7 @@
     "roon-mcp": "./build/index.js"
   },
   "scripts": {
+    "postinstall": "node scripts/patch-roon-api.js",
     "build": "tsc",
     "start": "node build/index.js"
   },

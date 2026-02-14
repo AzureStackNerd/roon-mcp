@@ -8,7 +8,10 @@
       "Bash(npm install:*)",
       "Bash(npx tsc:*)",
       "Bash(node -e:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(dir:*)",
+      "Bash(node --input-type=module:*)",
+      "Bash(node:*)"
     ]
   }
 }

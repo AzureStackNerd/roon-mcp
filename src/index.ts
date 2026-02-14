@@ -8,9 +8,19 @@ import { registerPlaybackTools } from "./tools/playback.js";
 import { registerVolumeTools } from "./tools/volume.js";
 import { registerBrowseTools } from "./tools/browse.js";
 
+// Prevent process crashes from unhandled errors in node-roon-api's WebSocket.
+// The ws library emits EventEmitter 'error' events, but node-roon-api only sets
+// DOM-style .onerror handlers, leaving EventEmitter errors unhandled.
+process.on("uncaughtException", (error) => {
+  console.error("[roon-mcp] Uncaught exception (kept alive):", error.message);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("[roon-mcp] Unhandled rejection (kept alive):", reason);
+});
+
 const server = new McpServer({
   name: "roon-mcp",
-  version: "1.0.0",
+  version: "1.0.1",
 });
 
 registerZoneTools(server);
