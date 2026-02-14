@@ -4,7 +4,7 @@ An MCP (Model Context Protocol) server that lets Claude Desktop control [Roon](h
 
 ## Features
 
-- **19 MCP tools** for full Roon control
+- **20 MCP tools** for full Roon control
 - Search and play artists, albums, tracks, and playlists
 - Playback controls: play, pause, stop, skip, seek, shuffle, loop
 - Volume control with mute support
@@ -75,6 +75,7 @@ Add the server to your Claude Desktop configuration file:
 | ------------- | ---------- | -------------------------------------------------------- |
 | `list_zones`  | —          | List all zones with current playback status              |
 | `now_playing` | `zone?`    | Get current track info for a zone (or all playing zones) |
+| `get_queue`   | `zone`     | Get the play queue for a zone                            |
 
 ### Playback Controls
 
@@ -130,7 +131,7 @@ src/
   index.ts              # Entry point, MCP server setup
   roon-connection.ts    # Roon connection management, zone cache
   tools/
-    zone.ts             # list_zones, now_playing
+    zone.ts             # list_zones, now_playing, get_queue
     playback.ts         # play, pause, stop, seek, shuffle, loop
     volume.ts           # change_volume, mute, get_volume
     browse.ts           # search, play_artist/album/playlist/track, add_to_queue
