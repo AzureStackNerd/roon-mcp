@@ -55,6 +55,15 @@ declare module "node-roon-api-transport" {
     now_playing?: NowPlaying;
   }
 
+  export interface QueueItem {
+    queue_item_id: number;
+    length?: number;
+    image_key?: string;
+    one_line: { line1: string };
+    two_line: { line1: string; line2?: string };
+    three_line: { line1: string; line2?: string; line3?: string };
+  }
+
   export type ResultCallback = (error: false | string) => void;
   export type ZonesCallback = (error: false | string, body?: { zones: Zone[] }) => void;
 
@@ -106,6 +115,11 @@ declare module "node-roon-api-transport" {
     ): void;
     get_zones(cb: ZonesCallback): void;
     subscribe_zones(cb: SubscribeZonesCallback): void;
+    subscribe_queue(
+      zone_or_output: Zone | Output | string,
+      max_item_count: number,
+      cb: (response: string, msg: { items?: QueueItem[]; changes?: unknown }) => void,
+    ): { unsubscribe(): void };
     zone_by_zone_id(zone_id: string): Zone | null;
     zone_by_output_id(output_id: string): Zone | null;
   }

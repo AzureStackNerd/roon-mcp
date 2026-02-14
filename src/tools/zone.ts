@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { roonConnection } from "../roon-connection.js";
+import type { QueueItem } from "node-roon-api-transport";
 
 export function registerZoneTools(server: McpServer): void {
   server.tool(
@@ -82,6 +83,56 @@ export function registerZoneTools(server: McpServer): void {
         const result = playing.map(formatNowPlaying).join("\n\n---\n\n");
         return {
           content: [{ type: "text", text: result }],
+        };
+      } catch (error) {
+        return {
+          content: [{ type: "text", text: String(error instanceof Error ? error.message : error) }],
+          isError: true,
+        };
+      }
+    },
+  );
+
+  server.tool(
+    "get_queue",
+    "Get the play queue for a Roon zone",
+    {
+      zone: z.string().describe("Zone name or ID"),
+    },
+    async ({ zone }) => {
+      try {
+        const transport = roonConnection.getTransport();
+        const z = roonConnection.findZoneOrThrow(zone);
+
+        const items = await new Promise<QueueItem[]>((resolve, reject) => {
+          const timeout = setTimeout(() => reject(new Error("Queue request timed out")), 5000);
+
+          const sub = transport.subscribe_queue(z, 100, (response, msg) => {
+            if (response === "Subscribed") {
+              clearTimeout(timeout);
+              resolve(msg.items || []);
+              // Unsubscribe after getting the initial data
+              try { sub.unsubscribe(); } catch { /* ignore */ }
+            }
+          });
+        });
+
+        if (items.length === 0) {
+          return {
+            content: [{ type: "text", text: `Queue for '${z.display_name}' is empty.` }],
+          };
+        }
+
+        const lines = [`Queue for '${z.display_name}' (${items.length} items):\n`];
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const duration = item.length ? ` [${formatTime(item.length)}]` : "";
+          const artist = item.two_line.line2 ? ` - ${item.two_line.line2}` : "";
+          lines.push(`${i + 1}. ${item.two_line.line1}${artist}${duration}`);
+        }
+
+        return {
+          content: [{ type: "text", text: lines.join("\n") }],
         };
       } catch (error) {
         return {
