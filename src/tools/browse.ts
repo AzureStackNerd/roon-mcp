@@ -36,11 +36,19 @@ function promisifyLoad(
   );
 }
 
+/**
+ * Strip Roon's internal link format from text.
+ * Roon subtitles may contain `[[12345|Artist Name]]` — extract just the name.
+ */
+function stripRoonLinks(text: string): string {
+  return text.replace(/\[\[\d+\|([^\]]+)\]\]/g, "$1");
+}
+
 function formatItems(items: BrowseItem[]): string {
   return items
     .filter((item) => item.hint !== "header")
     .map((item, i) => {
-      const sub = item.subtitle ? ` - ${item.subtitle}` : "";
+      const sub = item.subtitle ? ` - ${stripRoonLinks(item.subtitle)}` : "";
       return `${i + 1}. ${item.title}${sub}`;
     })
     .join("\n");
@@ -111,7 +119,7 @@ function bestMatch(items: BrowseItem[], query: string): BrowseItem | undefined {
   for (let i = 0; i < playable.length; i++) {
     const item = playable[i];
     const titleLower = item.title.toLowerCase().trim();
-    const subtitleLower = (item.subtitle || "").toLowerCase();
+    const subtitleLower = stripRoonLinks(item.subtitle || "").toLowerCase();
     let score = 0;
 
     // Word matching in title (high value)
@@ -489,7 +497,7 @@ async function searchAndPlay(
       // Non-critical: if auto_radio disable fails, playback still works
     }
 
-    const subtitle = matchedResult.subtitle ? ` by ${matchedResult.subtitle}` : "";
+    const subtitle = matchedResult.subtitle ? ` by ${stripRoonLinks(matchedResult.subtitle)}` : "";
     const actionVerb = actionType === "queue" ? "Queued" : "Now playing";
     return {
       content: [{ type: "text", text: `${actionVerb}: "${matchedResult.title}"${subtitle} in zone '${zone.display_name}'.` }],
@@ -558,7 +566,7 @@ export function registerBrowseTools(server: McpServer): void {
           allResults.push(`\n${catData.list?.title || cat.title} (${count}):`);
           for (const item of catData.items) {
             if (item.hint === "header") continue;
-            const sub = item.subtitle ? ` - ${item.subtitle}` : "";
+            const sub = item.subtitle ? ` - ${stripRoonLinks(item.subtitle)}` : "";
             allResults.push(`  - ${item.title}${sub}`);
           }
 
