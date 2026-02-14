@@ -20,7 +20,7 @@ process.on("unhandledRejection", (reason) => {
 
 const server = new McpServer({
   name: "roon-mcp",
-  version: "1.0.1",
+  version: "1.0.4",
 });
 
 registerZoneTools(server);

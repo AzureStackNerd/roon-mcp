@@ -59,7 +59,7 @@ export class RoonConnection {
     this.roon = new RoonApi({
       extension_id: "com.roon-mcp.claude",
       display_name: "Roon MCP for Claude",
-      display_version: "1.0.1",
+      display_version: "1.0.4",
       publisher: "roon-mcp",
       email: "noreply@roon-mcp.local",
       log_level: "none",

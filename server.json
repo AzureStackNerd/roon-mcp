@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.AzureStackNerd/roon-mcp",
+  "description": "Control your Roon audio system with natural language via Claude Desktop",
+  "repository": {
+    "url": "https://github.com/AzureStackNerd/roon-mcp",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@azurestacknerd/roon-mcp",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
