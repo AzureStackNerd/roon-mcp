@@ -1,16 +1,29 @@
 {
-  "name": "roon-mcp",
+  "name": "@azurestacknerd/roon-mcp",
   "version": "1.0.1",
   "description": "MCP server for controlling Roon music playback via Claude Desktop",
+  "mcpName": "io.github.azurestacknerd/roon-mcp",
   "type": "module",
   "main": "build/index.js",
   "bin": {
     "roon-mcp": "./build/index.js"
   },
+  "keywords": ["mcp", "roon", "audio", "music", "model-context-protocol"],
+  "author": "AzureStackNerd",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AzureStackNerd/roon-mcp.git"
+  },
+  "files": [
+    "build",
+    "scripts"
+  ],
   "scripts": {
     "postinstall": "node scripts/patch-roon-api.js",
     "build": "tsc",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
